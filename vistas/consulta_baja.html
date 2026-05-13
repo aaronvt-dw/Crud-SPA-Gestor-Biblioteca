@@ -1,0 +1,158 @@
+<div class="formulario-contenedor">
+    <h2>Consulta y Baja de Libro</h2>
+    <div id="mensaje-consulta"></div>
+    <table class="formulario">
+        <tr>
+            <td>ID del Libro:</td>
+            <td>
+                <input type="number" id="codigoLibro" min="1" required class="input-consulta">
+                <button type="button" id="botonConsultar" class="boton-filtrar" onclick="ajaxjquery_consulta(document.getElementById('codigoLibro').value)">Consultar</button>
+                <button type="button" id="botonLimpiar" class="boton-limpiar-baja" onclick="pulso_limpiar()">Limpiar</button>
+            </td>
+        </tr>
+    </table>
+    
+    <div id="resultado-consulta" class="resultado-consulta"></div>
+</div>
+
+<script type="text/javascript">
+
+function limpio_info()
+{
+	document.getElementById('mensaje-consulta').innerHTML="";
+}
+
+function pasofoco(elid)
+{
+	document.getElementById(elid).focus();
+}
+
+function ajaxjquery_consulta(elcodigo)
+{
+	if (!elcodigo)
+	{
+		alert('Introduce un ID válido');
+		return;
+	}
+
+	limpio_info();
+	document.getElementById('botonConsultar').disabled=true;
+	document.getElementById('botonLimpiar').disabled=true;
+
+	$.post("controladores/procesar_consulta_baja.php",{"accion":"consultar","id":elcodigo},function(datos)
+	{
+		var libro = (typeof datos === 'string') ? JSON.parse(datos) : datos;
+
+		if (libro!=0)
+		{
+			var divTarjeta = document.createElement('div');
+			divTarjeta.className = 'tarjeta-libro';
+
+			var titulo = document.createElement('h3');
+			titulo.textContent = libro.titulo;
+			divTarjeta.appendChild(titulo);
+
+			var detalles = [
+				{ nombre: 'Autor', valor: libro.autor },
+				{ nombre: 'Género', valor: libro.genero },
+				{ nombre: 'Estado', valor: libro.estado },
+				{ nombre: 'Precio', valor: parseFloat(libro.precio).toFixed(2) + '€' }
+			];
+
+			for (var i = 0; i < detalles.length; i++)
+			{
+				var p = document.createElement('p');
+				var strong = document.createElement('strong');
+				strong.textContent = detalles[i].nombre + ': ';
+				p.appendChild(strong);
+				p.appendChild(document.createTextNode(detalles[i].valor));
+				divTarjeta.appendChild(p);
+			}
+
+			if (libro.imagen)
+			{
+				var divPortada = document.createElement('div');
+				var strongPortada = document.createElement('strong');
+				strongPortada.textContent = 'Portada:';
+				var br = document.createElement('br');
+				var img = document.createElement('img');
+				img.src = libro.imagen;
+				img.className = 'imagen-portada';
+
+				divPortada.appendChild(strongPortada);
+				divPortada.appendChild(br);
+				divPortada.appendChild(img);
+				divTarjeta.appendChild(divPortada);
+			}
+
+			var br2 = document.createElement('br');
+			divTarjeta.appendChild(br2);
+
+			var btnEliminar = document.createElement('button');
+			btnEliminar.type = 'button';
+			btnEliminar.className = 'btn-eliminar';
+			btnEliminar.textContent = 'Eliminar Libro';
+			btnEliminar.onclick = function()
+			{
+				ajaxjquery_baja(libro.id);
+			};
+			divTarjeta.appendChild(btnEliminar);
+
+			document.getElementById('resultado-consulta').innerHTML = '';
+			document.getElementById('resultado-consulta').appendChild(divTarjeta);
+			limpio_info();
+			document.getElementById('codigoLibro').disabled = true;
+		}
+		else
+		{
+			document.getElementById('resultado-consulta').innerHTML = '';
+			document.getElementById('mensaje-consulta').innerHTML="<b><font face='Calibri' color='red' size='4'>Error: Código "+elcodigo+" no existe!!</font></b>";
+			pasofoco('codigoLibro');
+		}
+
+		document.getElementById('botonConsultar').disabled=false;
+		document.getElementById('botonLimpiar').disabled=false;
+	});
+}
+
+function pulso_limpiar()
+{
+	document.getElementById('codigoLibro').disabled = false;
+	document.getElementById('codigoLibro').value = "";
+	limpio_info();
+	document.getElementById('resultado-consulta').innerHTML = '';
+	document.getElementById('botonConsultar').disabled = false;
+	pasofoco('codigoLibro');
+}
+
+function ajaxjquery_baja(elcodigo)
+{
+	if (!confirm('¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.')) return;
+
+	document.getElementById('botonLimpiar').disabled = true;
+	document.getElementById('botonConsultar').disabled = true;
+
+	$.post("controladores/procesar_consulta_baja.php",{"accion":"baja","id":elcodigo},function(datos)
+	{
+		var codRespuesta = parseInt(datos);
+
+		document.getElementById('resultado-consulta').innerHTML = '';
+
+		if (codRespuesta==1)
+		{document.getElementById('mensaje-consulta').innerHTML="<b><font face='Calibri' color='green' size='4'>El libro con código "+elcodigo+" se ha borrado con éxito!!</font></b>";}
+		else
+		{document.getElementById('mensaje-consulta').innerHTML="<b><font face='Calibri' color='red' size='4'>Error: No se pudo eliminar el libro "+elcodigo+"!!</font></b>";}
+
+		setTimeout("limpio_info()",5000);
+
+		document.getElementById('codigoLibro').disabled = false;
+		document.getElementById('codigoLibro').value = "";
+
+		document.getElementById('botonConsultar').disabled = false;
+		document.getElementById('botonLimpiar').disabled = false;
+
+		pasofoco('codigoLibro');
+	});
+}
+
+</script>

@@ -1,0 +1,119 @@
+<div class="filtros">
+    <h3>Filtros de Búsqueda</h3>
+    <form id="formulario_filtros">
+        <div class="filtro-campo">
+            <label for="filtro_genero">Género:</label>
+            <select id="filtro_genero" name="filtro_genero">
+                <option value="">-- Todos --</option>
+                <option value="Novela">Novela</option>
+                <option value="Ciencia Ficción">Ciencia Ficción</option>
+                <option value="Fantasía">Fantasía</option>
+                <option value="Terror">Terror</option>
+                <option value="Romance">Romance</option>
+                <option value="Histórico">Histórico</option>
+                <option value="Biografía">Biografía</option>
+                <option value="Misterio">Misterio</option>
+            </select>
+        </div>
+        
+        <div class="filtro-campo">
+            <label for="filtro_estado">Estado:</label>
+            <select id="filtro_estado" name="filtro_estado">
+                <option value="">-- Todos --</option>
+                <option value="Nuevo">Nuevo</option>
+                <option value="Usado">Usado</option>
+            </select>
+        </div>
+        
+        <button type="button" class="boton-filtrar" onclick="cargarListado();">Aplicar Filtros</button>
+    </form>
+</div>
+
+<div id="listadoContenedor" class="tabla-contenedor">
+    <!-- El listado se cargará aquí -->
+</div>
+
+<script>
+function cargarListado() {
+    var genero = document.getElementById('filtro_genero').value;
+    var estado = document.getElementById('filtro_estado').value;
+    
+    $.ajax({
+        url: 'controladores/procesar_listados.php',
+        type: 'GET',
+        data: { filtro_genero: genero, filtro_estado: estado },
+        success: function(respuesta) {
+            // como enviamos header application/json, jQuery lo parsea automáticamente, o si no lo parseamos:
+            var data = (typeof respuesta === 'string') ? JSON.parse(respuesta) : respuesta;
+            var contenedor = document.getElementById('listadoContenedor');
+            
+            if (data !== 0) {
+                var tabla = document.createElement('table');
+                tabla.className = 'datos';
+                
+                var thead = document.createElement('thead');
+                var trHead = document.createElement('tr');
+                var encabezados = ['ID', 'Portada', 'Título', 'Autor', 'Género', 'Fecha de Publicación', 'Estado', 'Precio'];
+                
+                for (var i = 0; i < encabezados.length; i++) {
+                    var texto = encabezados[i];
+                    var th = document.createElement('th');
+                    th.textContent = texto;
+                    trHead.appendChild(th);
+                }
+                
+                thead.appendChild(trHead);
+                tabla.appendChild(thead);
+                
+                var tbody = document.createElement('tbody');
+                
+                for (var j = 0; j < data.length; j++) {
+                    var libro = data[j];
+                    var fechaParts = libro.fecha_publicacion.split('-');
+                    var fechaFormat = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
+                    var precioFormat = parseFloat(libro.precio).toFixed(2) + '€';
+                    
+                    var tr = document.createElement('tr');
+                    
+                    var celdas = [
+                        { label: 'ID', valor: libro.id },
+                        { label: 'Portada', html: '<img src="' + libro.imagen + '" width="40">' },
+                        { label: 'Título', valor: libro.titulo },
+                        { label: 'Autor', valor: libro.autor },
+                        { label: 'Género', valor: libro.genero },
+                        { label: 'Fecha', valor: fechaFormat },
+                        { label: 'Estado', valor: libro.estado },
+                        { label: 'Precio', valor: precioFormat }
+                    ];
+                    
+                    for (var k = 0; k < celdas.length; k++) {
+                        var celda = celdas[k];
+                        var td = document.createElement('td');
+                        td.setAttribute('data-label', celda.label);
+                        if (celda.html) {
+                            td.innerHTML = celda.html;
+                        } else {
+                            td.textContent = celda.valor;
+                        }
+                        tr.appendChild(td);
+                    }
+                    
+                    tbody.appendChild(tr);
+                }
+                
+                tabla.appendChild(tbody);
+                contenedor.innerHTML = '';
+                contenedor.appendChild(tabla);
+            } else {
+                contenedor.innerHTML = '<p class="mensaje-error">No se encontraron libros.</p>';
+            }
+        },
+        error: function() {
+            document.getElementById('listadoContenedor').innerHTML = '<p class="mensaje-error">Error al cargar listado.</p>';
+        }
+    });
+}
+
+// Cargar por defecto al abrir la vista
+cargarListado();
+</script>

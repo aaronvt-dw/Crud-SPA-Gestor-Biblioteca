@@ -1,0 +1,106 @@
+<div class="formulario-contenedor">
+    <h2>Registrar Nuevo Libro</h2>
+    <div id="mensaje-alta"></div>
+    <form id="form-alta" enctype="multipart/form-data">
+        <table class="formulario">
+            <tr>
+                <td>Código:</td>
+                <td><input type="number" id="id" name="id" min="1" max="9999" required autofocus></td>
+            </tr>
+            <tr>
+                <td>Título:</td>
+                <td><input type="text" id="titulo" name="titulo" minlength="2" maxlength="30" required
+                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\s.,:\-!¡?¿]+"></td>
+            </tr>
+            <tr>
+                <td>Autor:</td>
+                <td><input type="text" id="autor" name="autor" minlength="2" maxlength="25" required
+                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s.]+"></td>
+            </tr>
+            <tr>
+                <td>Fecha de Publicación:</td>
+                <td><input type="date" id="fecha_publicacion" name="fecha_publicacion" required></td>
+            </tr>
+            <tr>
+                <td>Precio (€):</td>
+                <td><input type="number" id="precio" name="precio" step="0.01" min="0" max="10000" required></td>
+            </tr>
+            <tr>
+                <td>Género:</td>
+                <td>
+                    <select id="genero" name="genero" required>
+                        <option value="">-- Selecciona un género --</option>
+                        <option value="Novela">Novela</option>
+                        <option value="Ciencia Ficción">Ciencia Ficción</option>
+                        <option value="Fantasía">Fantasía</option>
+                        <option value="Terror">Terror</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Histórico">Histórico</option>
+                        <option value="Biografía">Biografía</option>
+                        <option value="Misterio">Misterio</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Estado:</td>
+                <td>
+                    <div class="radio-grupo">
+                        <label><input type="radio" name="estado" value="Nuevo" required> Nuevo</label>
+                        <label><input type="radio" name="estado" value="Usado"> Usado</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Imagen de Portada:</td>
+                <td><input type="file" id="imagen" name="imagen" accept="image/*" required></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center; padding-top: 20px;">
+                    <button type="button" class="boton-submit" onclick="enviarAlta()">Registrar Libro</button>
+                    <button type="reset" class="btn-limpiar" onclick="limpiarAlta()">Limpiar Formulario</button>
+                </td>   
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+function limpiarAlta() {
+    document.getElementById('mensaje-alta').innerHTML = '';
+    document.getElementById('id').focus();
+}
+
+function enviarAlta() {
+    var form = document.getElementById('form-alta');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    if (!confirm('¿Deseas registrar este libro?')) return;
+
+    var formData = new FormData(form);
+    
+    $.ajax({
+        url: 'controladores/procesar_alta.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(respuesta) {
+            var mensajeAlta = document.getElementById('mensaje-alta');
+            var codRespuesta = parseInt(respuesta);
+            if (codRespuesta === 1) {
+                mensajeAlta.innerHTML = '<p class="mensaje-exito">Libro registrado correctamente.</p>';
+                form.reset();
+            } else if (codRespuesta === 2) {
+                mensajeAlta.innerHTML = '<p class="mensaje-error">ERROR: Ese código de libro ya existe.</p>';
+            } else {
+                mensajeAlta.innerHTML = '<p class="mensaje-error">Error al registrar el libro en la base de datos.</p>';
+            }
+        },
+        error: function() {
+            document.getElementById('mensaje-alta').innerHTML = '<p class="mensaje-error">Error al conectar con el servidor.</p>';
+        }
+    });
+}
+</script>
