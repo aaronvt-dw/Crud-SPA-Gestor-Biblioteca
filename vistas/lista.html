@@ -22,6 +22,8 @@
                 <option value="">-- Todos --</option>
                 <option value="Nuevo">Nuevo</option>
                 <option value="Usado">Usado</option>
+            
+                
             </select>
         </div>
         
@@ -30,7 +32,7 @@
 </div>
 
 <div id="listadoContenedor" class="tabla-contenedor">
-    <!-- El listado se cargará aquí -->
+   
 </div>
 
 <script>
@@ -44,10 +46,10 @@ function cargarListado() {
         data: { filtro_genero: genero, filtro_estado: estado },
         success: function(respuesta) {
             // como enviamos header application/json, jQuery lo parsea automáticamente, o si no lo parseamos:
-            var data = (typeof respuesta === 'string') ? JSON.parse(respuesta) : respuesta;
+            var datos = (typeof respuesta === 'string') ? JSON.parse(respuesta) : respuesta;
             var contenedor = document.getElementById('listadoContenedor');
             
-            if (data !== 0) {
+            if (datos !== 0) {
                 var tabla = document.createElement('table');
                 tabla.className = 'datos';
                 
@@ -67,17 +69,17 @@ function cargarListado() {
                 
                 var tbody = document.createElement('tbody');
                 
-                for (var j = 0; j < data.length; j++) {
-                    var libro = data[j];
-                    var fechaParts = libro.fecha_publicacion.split('-');
-                    var fechaFormat = fechaParts[2] + '-' + fechaParts[1] + '-' + fechaParts[0];
+                for (var j = 0; j < datos.length; j++) {
+                    var libro = datos[j];
+                    var fechaPartes = libro.fecha_publicacion.split('-');
+                    var fechaFormat = fechaPartes[2] + '-' + fechaPartes[1] + '-' + fechaPartes[0];
                     var precioFormat = parseFloat(libro.precio).toFixed(2) + '€';
                     
                     var tr = document.createElement('tr');
                     
                     var celdas = [
                         { label: 'ID', valor: libro.id },
-                        { label: 'Portada', html: '<img src="' + libro.imagen + '" width="40">' },
+                        { label: 'Portada', html: '<img src="' + libro.imagen + '" width="42">' },
                         { label: 'Título', valor: libro.titulo },
                         { label: 'Autor', valor: libro.autor },
                         { label: 'Género', valor: libro.genero },
@@ -105,15 +107,13 @@ function cargarListado() {
                 contenedor.innerHTML = '';
                 contenedor.appendChild(tabla);
             } else {
-                contenedor.innerHTML = '<p class="mensaje-error">No se encontraron libros.</p>';
+                contenedor.innerHTML = '<p class="mensaje-error">No se encontraron libros!.</p>';
             }
         },
         error: function() {
-            document.getElementById('listadoContenedor').innerHTML = '<p class="mensaje-error">Error al cargar listado.</p>';
+            document.getElementById('listadoContenedor').innerHTML = '<p class="mensaje-error">Error al cargar el listado.</p>';
         }
     });
 }
-
-// Cargar por defecto al abrir la vista
 cargarListado();
 </script>

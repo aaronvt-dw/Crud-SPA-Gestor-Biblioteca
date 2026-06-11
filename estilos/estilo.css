@@ -260,6 +260,10 @@ footer i {
     color: #3498db;
 }
 
+.boton-rojo i {
+    color: #e74c3c;
+}
+
 .boton h3 {
     font-size: 22px;
     margin-bottom: 15px;
@@ -561,17 +565,33 @@ table.datos td {
     font-size: 14px;
     word-wrap: break-word;
 }
+/*que de 100*/
+table.datos th:nth-child(1), table.datos td:nth-child(1) {
+     width: 5%;
+     }
+table.datos th:nth-child(2), table.datos td:nth-child(2) { 
+    width: 8%; 
+}
+table.datos th:nth-child(3), table.datos td:nth-child(3) {
+     width: 20%; 
+    }
+table.datos th:nth-child(4), table.datos td:nth-child(4) {
+     width: 18%; 
+    }
+table.datos th:nth-child(5), table.datos td:nth-child(5) {
+     width: 13%;
+    }
+table.datos th:nth-child(6), table.datos td:nth-child(6) {
+     width: 14%; 
+    }
+table.datos th:nth-child(7), table.datos td:nth-child(7) {
+     width: 10%; 
+    }
+table.datos th:nth-child(8), table.datos td:nth-child(8) {
+     width: 12%; 
+    }
 
-table.datos th:nth-child(1), table.datos td:nth-child(1) { width: 5%; }
-table.datos th:nth-child(2), table.datos td:nth-child(2) { width: 8%; }
-table.datos th:nth-child(3), table.datos td:nth-child(3) { width: 20%; }
-table.datos th:nth-child(4), table.datos td:nth-child(4) { width: 18%; }
-table.datos th:nth-child(5), table.datos td:nth-child(5) { width: 13%; }
-table.datos th:nth-child(6), table.datos td:nth-child(6) { width: 14%; }
-table.datos th:nth-child(7), table.datos td:nth-child(7) { width: 10%; }
-table.datos th:nth-child(8), table.datos td:nth-child(8) { width: 12%; }
-
-table.datos tr:nth-child(even) {
+table.datos tr:nth-child(even) {/*los pares, y los impares es odd*/
     background-color: #f9f9f9;
 }
 
@@ -756,6 +776,17 @@ table.datos tr:hover {
         display: block;
         margin-bottom: 15px;
     }
+    table.formulario input[type="text"],
+    table.formulario input[type="number"],
+    table.formulario input[type="date"],
+    table.formulario select {
+        display: block;
+        width: 70%;
+        max-width: 360px;
+        margin: 0 auto;
+        padding: 8px;
+        box-sizing: border-box;
+    }
     .radio-grupo {
         flex-direction: column;
         gap: 10px;
@@ -763,6 +794,16 @@ table.datos tr:hover {
     .boton-submit {
         width: 100%;
         padding: 12px;
+        margin: 0 0 10px 0;
+        display: block;
+        box-sizing: border-box;
+    }
+    .btn-limpiar {
+        width: 100%;
+        padding: 12px;
+        display: block;
+        margin: 0;
+        box-sizing: border-box;
     }
     .filtros {
         padding: 15px;

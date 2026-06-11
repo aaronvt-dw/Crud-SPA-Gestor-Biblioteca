@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td>Precio (€):</td>
-                <td><input type="number" id="precio" name="precio" step="0.01" min="0" max="10000" required></td>
+                <td><input type="number" id="precio" name="precio" step="0.01" min="0.01" max="10000" required></td>
             </tr>
             <tr>
                 <td>Género:</td>
@@ -36,9 +36,9 @@
                         <option value="Terror">Terror</option>
                         <option value="Romance">Romance</option>
                         <option value="Histórico">Histórico</option>
-                        <option value="Biografía">Biografía</option>
-                        <option value="Misterio">Misterio</option>
-                    </select>
+                        <option value="Biografía">Biografía</option>       
+                    </select>                
+                          
                 </td>
             </tr>
             <tr>
@@ -76,8 +76,7 @@ function enviarAlta() {
         form.reportValidity();
         return;
     }
-    if (!confirm('¿Deseas registrar este libro?')) return;
-
+    
     var formData = new FormData(form);
     
     $.ajax({

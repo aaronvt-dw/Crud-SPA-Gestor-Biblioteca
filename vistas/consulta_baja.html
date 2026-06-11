@@ -62,7 +62,7 @@ function ajaxjquery_consulta(elcodigo)
 			for (var i = 0; i < detalles.length; i++)
 			{
 				var p = document.createElement('p');
-				var strong = document.createElement('strong');
+				var strong = document.createElement('strong');//nombre del campo en negrita
 				strong.textContent = detalles[i].nombre + ': ';
 				p.appendChild(strong);
 				p.appendChild(document.createTextNode(detalles[i].valor));
@@ -92,8 +92,8 @@ function ajaxjquery_consulta(elcodigo)
 			btnEliminar.type = 'button';
 			btnEliminar.className = 'btn-eliminar';
 			btnEliminar.textContent = 'Eliminar Libro';
-			btnEliminar.onclick = function()
-			{
+			btnEliminar.onclick = function(){
+			
 				ajaxjquery_baja(libro.id);
 			};
 			divTarjeta.appendChild(btnEliminar);
@@ -127,7 +127,7 @@ function pulso_limpiar()
 
 function ajaxjquery_baja(elcodigo)
 {
-	if (!confirm('¿Estás seguro de que deseas eliminar este libro? Esta acción no se puede deshacer.')) return;
+	if (!confirm('¿Estás seguro de que quieres eliminar este libro? Esto no se puede deshacer')) return;
 
 	document.getElementById('botonLimpiar').disabled = true;
 	document.getElementById('botonConsultar').disabled = true;
@@ -150,7 +150,6 @@ function ajaxjquery_baja(elcodigo)
 
 		document.getElementById('botonConsultar').disabled = false;
 		document.getElementById('botonLimpiar').disabled = false;
-
 		pasofoco('codigoLibro');
 	});
 }

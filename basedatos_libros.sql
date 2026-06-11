@@ -1,7 +1,5 @@
 
-DROP DATABASE IF EXISTS aarondev_base;  
-CREATE DATABASE aarondev_base;
-USE aarondev_base;
+USE aarondev_biblioteca;
 DROP TABLE IF EXISTS libros;
 CREATE TABLE IF NOT EXISTS libros (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,10 +30,10 @@ DROP FUNCTION IF EXISTS BorrarLibro //
 CREATE FUNCTION BorrarLibro(libro_id INT) RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE v_count INT;
-    SELECT COUNT(*) INTO v_count FROM libros WHERE id = libro_id;
+    DECLARE EXISTE INT;
+    SELECT COUNT(*) INTO EXISTE FROM libros WHERE id = libro_id;
     
-    IF v_count > 0 THEN
+    IF EXISTE > 0 THEN
         DELETE FROM libros WHERE id = libro_id;
         RETURN 1;
     ELSE
